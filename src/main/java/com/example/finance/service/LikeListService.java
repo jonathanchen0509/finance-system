@@ -1,7 +1,9 @@
 package com.example.finance.service;
 
-import com.example.finance.entity.*;
-import com.example.finance.repository.*;
+import com.example.finance.entity.LikeList;
+import com.example.finance.entity.Product;
+import com.example.finance.repository.LikeListRepository;
+import com.example.finance.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,46 +15,66 @@ import java.util.List;
 public class LikeListService {
 
     private final LikeListRepository likeListRepository;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
     public LikeListService(LikeListRepository likeListRepository,
-                           UserRepository userRepository,
                            ProductRepository productRepository) {
         this.likeListRepository = likeListRepository;
-        this.userRepository = userRepository;
         this.productRepository = productRepository;
     }
 
+    //  新增喜好商品
     @Transactional
-    public LikeList create(String userId, Long productId, int quantity) {
+    public LikeList create(Long productNo, int quantity, String account) {
 
-        // 檢查 User
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User 不存在"));
-
-        // 檢查 Product
-        Product product = productRepository.findById(productId)
+        // 取得商品（用來計算）
+        Product product = productRepository.findById(productNo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product 不存在"));
 
-        // 建立 LikeList
         LikeList like = new LikeList();
-        like.setUser(user);
-        like.setProduct(product);
-        like.setQuantity(quantity);
 
-        // 計算金額
+        like.setPurchaseQuantity(quantity);
+        like.setAccount(account);
+
+        // 計算總金額與手續費
         double totalAmount = product.getPrice() * quantity;
         double totalFee = totalAmount * product.getFeeRate();
 
         like.setTotalAmount(totalAmount);
         like.setTotalFee(totalFee);
 
-        // 存資料
         return likeListRepository.save(like);
     }
 
+    //  查詢全部
     public List<LikeList> getAll() {
         return likeListRepository.findAll();
+    }
+
+    //  刪除
+    public void delete(Long sn) {
+        likeListRepository.deleteById(sn);
+    }
+
+    //  更新
+    @Transactional
+    public LikeList update(Long sn, Long productId, int quantity, String account) {
+
+        LikeList like = likeListRepository.findById(sn)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "資料不存在"));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product 不存在"));
+
+        like.setPurchaseQuantity(quantity);
+        like.setAccount(account);
+
+        double totalAmount = product.getPrice() * quantity;
+        double totalFee = totalAmount * product.getFeeRate();
+
+        like.setTotalAmount(totalAmount);
+        like.setTotalFee(totalFee);
+
+        return likeListRepository.save(like);
     }
 }

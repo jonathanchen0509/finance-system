@@ -9,20 +9,9 @@ public class LikeList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // 關聯 User
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    // 關聯 Product
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    private int quantity;
-
-    private double totalAmount;
-    private double totalFee;
+    private Long sn;   // SN (Primary Key)
+    private int purchaseQuantity;  // 購買數量
+    private String account;        // 扣款帳號
+    private double totalFee;       // 總手續費
+    private double totalAmount;    // 總金額
 }

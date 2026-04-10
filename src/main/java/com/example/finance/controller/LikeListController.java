@@ -16,18 +16,36 @@ public class LikeListController {
         this.likeListService = likeListService;
     }
 
+    //  新增
     @PostMapping
     public LikeList create(
-            @RequestParam String userId,
             @RequestParam Long productId,
-            @RequestParam int quantity) {
+            @RequestParam int quantity,
+            @RequestParam String account) {
 
-        return likeListService.create(userId, productId, quantity);
+        return likeListService.create(productId, quantity, account);
     }
 
+    //  查詢全部
     @GetMapping
     public List<LikeList> getAll() {
         return likeListService.getAll();
     }
 
+    //  刪除
+    @DeleteMapping("/{sn}")
+    public void delete(@PathVariable Long sn) {
+        likeListService.delete(sn);
+    }
+
+    //  更新
+    @PutMapping("/{sn}")
+    public LikeList update(
+            @PathVariable Long sn,
+            @RequestParam Long productId,
+            @RequestParam int quantity,
+            @RequestParam String account) {
+
+        return likeListService.update(sn, productId, quantity, account);
+    }
 }

@@ -11,9 +11,8 @@ import lombok.Data;
 public class User {
 
     @Id
-    private String userId;
-
-    private String userName;
-    private String email;
-    private String account;
+    private String userId;  //使用者ID (Primary Key)
+    private String userName;    //使用者名稱
+    private String email;   //使用者電子郵件
+    private String account; //扣款帳號
 }
