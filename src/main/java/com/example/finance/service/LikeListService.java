@@ -5,6 +5,9 @@ import com.example.finance.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class LikeListService {
@@ -21,13 +24,14 @@ public class LikeListService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public LikeList create(String userId, Long productId, int quantity) {
 
-        // 查 User（錯誤訊息）
+        // 檢查 User
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User 不存在"));
 
-        // 查 Product
+        // 檢查 Product
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product 不存在"));
 
@@ -46,5 +50,9 @@ public class LikeListService {
 
         // 存資料
         return likeListRepository.save(like);
+    }
+
+    public List<LikeList> getAll() {
+        return likeListRepository.findAll();
     }
 }

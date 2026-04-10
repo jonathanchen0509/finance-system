@@ -4,6 +4,8 @@ import com.example.finance.entity.LikeList;
 import com.example.finance.service.LikeListService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/likes")
 public class LikeListController {
@@ -22,4 +24,10 @@ public class LikeListController {
 
         return likeListService.create(userId, productId, quantity);
     }
+
+    @GetMapping
+    public List<LikeList> getAll() {
+        return likeListService.getAll();
+    }
+
 }
