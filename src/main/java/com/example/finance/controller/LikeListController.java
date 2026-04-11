@@ -2,9 +2,12 @@ package com.example.finance.controller;
 
 import com.example.finance.dto.LikeListRequest;
 import com.example.finance.dto.LikeListResponse;
+import com.example.finance.entity.Product;
 import com.example.finance.service.LikeListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -36,5 +39,6 @@ public class LikeListController {
         likeListService.updateLike(sn, request);
         return "更新成功";
     }
+
 }
 

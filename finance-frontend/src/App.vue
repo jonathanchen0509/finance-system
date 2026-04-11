@@ -35,7 +35,12 @@
     <h2>新增商品</h2>
 
     <input v-model="newData.userId" placeholder="userId" />
-    <input v-model="newData.productNo" placeholder="productNo" />
+    <select v-model="newData.productNo">
+      <option disabled value="">請選擇商品</option>
+      <option v-for="p in products" :key="p.no" :value="p.no">
+        {{ p.productName }} (價格: {{ p.price }})
+      </option>
+    </select>
     <input v-model="newData.quantity" placeholder="quantity" />
     <input v-model="newData.account" placeholder="account" />
 
@@ -49,6 +54,7 @@ export default {
     return {
       userId: "",
       result: null,
+      products: [],
       newData: {
         userId: "",
         productNo: "",
@@ -56,6 +62,15 @@ export default {
         account: ""
       }
     };
+  },
+  mounted() {
+    console.log("mounted 有跑");
+    fetch("http://localhost:8080/products")
+        .then(res => res.json())
+        .then(data => {
+          console.log("products:", data);
+          this.products = data;
+        });
   },
   methods: {
     async getLikes() {

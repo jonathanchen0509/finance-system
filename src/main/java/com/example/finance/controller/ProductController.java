@@ -5,7 +5,7 @@ import com.example.finance.repository.ProductRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -40,4 +40,6 @@ public class ProductController {
         product.setNo(id);
         return productRepository.save(product);
     }
+
+
 }
