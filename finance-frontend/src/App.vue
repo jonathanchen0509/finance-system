@@ -1,79 +1,107 @@
 <template>
   <div>
-    <h1>金融商品喜好系統</h1>
+    <h2>喜好商品查詢</h2>
 
-```
-<h2>新增喜好商品</h2>
-<input v-model="userId" placeholder="User ID" />
-<input v-model="productId" placeholder="Product ID" />
-<input v-model="quantity" placeholder="Quantity" />
-<input v-model="account" placeholder="Account" />
-<button @click="createLike">新增</button>
+    <input v-model="userId" placeholder="輸入 userId" />
+    <button @click="getLikes">查詢</button>
 
-<h2>喜好清單</h2>
-<button @click="getLikes">查詢</button>
+    <div v-if="result">
+      <h3>{{ result.userName }}</h3>
+      <p>Email: {{ result.email }}</p>
+      <p>總金額: {{ result.totalAmount }}</p>
+      <p>手續費: {{ result.totalFee }}</p>
 
-<ul>
-  <li v-for="like in likes" :key="like.sn">
-    SN: {{ like.sn }} |
-    產品名稱: {{ like.productName }} |
-    數量: {{ like.purchaseQuantity }} |
-    帳號: {{ like.account }} |
-    Email :{{ like.email }}
-    金額: {{ like.totalAmount }} |
-    手續費: {{ like.totalFee }}
-    <button @click="deleteLike(like.sn)">刪除</button>
-  </li>
-</ul>
-```
+      <ul>
+        <li v-for="p in result.products" :key="p.productName">
+          {{ p.productName }} - {{ p.quantity }}
+          <button @click="deleteItem(p.sn)">刪除</button>
+        </li>
+      </ul>
+    </div>
 
+    <hr />
+
+    <h2>新增商品</h2>
+
+    <input v-model="newData.userId" placeholder="userId" />
+    <input v-model="newData.productId" placeholder="productId" />
+    <input v-model="newData.quantity" placeholder="quantity" />
+    <input v-model="newData.account" placeholder="account" />
+
+    <button @click="addLike">新增</button>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   data() {
     return {
       userId: "",
-      productId: "",
-      quantity: "",
-      account: "",
-      likes: []
+      result: null,
+      newData: {
+        userId: "",
+        productId: "",
+        quantity: "",
+        account: ""
+      }
     };
   },
   methods: {
-    async createLike() {
-      await axios.post("http://localhost:8080/likes", {
-        userId: this.userId,
-        productNo: this.productId,
-        quantity: this.quantity  
-      });
-
-      alert("新增成功");
-      this.getLikes();
-    },
-    
     async getLikes() {
-      const res = await axios.get("http://localhost:8080/likes");
-      this.likes = res.data;
-    },
+      const id = this.userId.trim();
 
-    async deleteLike(sn) {
-      await axios.delete(`http://localhost:8080/likes/${sn}`);
-      this.getLikes();
-    },
+      if (!id) {
+        alert("請輸入 userId");
+        return;
+      }
 
-    async updateLike(sn) {
-      await axios.put(`http://localhost:8080/likes/${sn}`, {
-        userId: this.userId,
-        productNo: this.productId,
-        quantity: this.quantity
+      try {
+        const res = await fetch(`http://localhost:8080/likes/${id}`);
+
+        if (!res.ok) {
+          alert("查詢失敗：" + res.status);
+          return;
+        }
+
+        this.result = await res.json();
+      } catch (e) {
+        alert("連線失敗");
+      }
+    },
+    async addLike() {
+      try {
+        console.log("送出資料:", this.newData);
+
+        const res = await fetch("http://localhost:8080/likes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            userId: this.newData.userId.trim(),
+            productId: Number(this.newData.productId),
+            quantity: Number(this.newData.quantity),
+            account: this.newData.account.trim()
+          })
+        });
+
+        if (!res.ok) {
+          alert("新增失敗：" + res.status);
+          return;
+        }
+
+        alert("新增成功");
+
+      } catch (e) {
+        console.error(e);
+        alert("連線錯誤");
+      }
+    },
+    async deleteItem(sn) {
+      await fetch(`http://localhost:8080/likes/${sn}`, {
+        method: "DELETE"
       });
-
-      alert("更新成功");
-      this.getLikes();
+      alert("刪除成功");
     }
   }
 };

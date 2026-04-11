@@ -6,6 +6,7 @@ import com.example.finance.service.LikeListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/likes")
 @RequiredArgsConstructor
