@@ -21,7 +21,7 @@ FROM product
 WHERE id = p_product_id;
 
 -- 計算
-SET v_base_amount = v_price * p_quantity;
+    SET v_base_amount = v_price * p_quantity;
     SET v_total_fee = v_base_amount * v_fee_rate;
     SET v_total_amount = v_base_amount + v_total_fee;
 
