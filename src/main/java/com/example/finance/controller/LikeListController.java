@@ -1,51 +1,39 @@
 package com.example.finance.controller;
 
-import com.example.finance.entity.LikeList;
+import com.example.finance.dto.LikeListRequest;
+import com.example.finance.dto.LikeListResponse;
 import com.example.finance.service.LikeListService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/likes")
+@RequiredArgsConstructor
 public class LikeListController {
 
     private final LikeListService likeListService;
 
-    public LikeListController(LikeListService likeListService) {
-        this.likeListService = likeListService;
-    }
-
-    //  新增
     @PostMapping
-    public LikeList create(
-            @RequestParam Long productId,
-            @RequestParam int quantity,
-            @RequestParam String account) {
-
-        return likeListService.create(productId, quantity, account);
+    public String addLike(@RequestBody LikeListRequest request) {
+        likeListService.addLike(request);
+        return "新增成功";
+    }
+    @GetMapping("/{userId}")
+    public LikeListResponse getLikeList(@PathVariable String userId) {
+        return likeListService.getLikeList(userId);
     }
 
-    //  查詢全部
-    @GetMapping
-    public List<LikeList> getAll() {
-        return likeListService.getAll();
-    }
-
-    //  刪除
     @DeleteMapping("/{sn}")
-    public void delete(@PathVariable Long sn) {
-        likeListService.delete(sn);
+    public String deleteLike(@PathVariable Integer sn) {
+        likeListService.deleteLike(sn);
+        return "刪除成功";
     }
 
-    //  更新
     @PutMapping("/{sn}")
-    public LikeList update(
-            @PathVariable Long sn,
-            @RequestParam Long productId,
-            @RequestParam int quantity,
-            @RequestParam String account) {
-
-        return likeListService.update(sn, productId, quantity, account);
+    public String updateLike(@PathVariable Integer sn,
+                             @RequestBody LikeListRequest request) {
+        likeListService.updateLike(sn, request);
+        return "更新成功";
     }
 }
+

@@ -2,16 +2,33 @@ package com.example.finance.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.math.BigDecimal;
 
-@Entity
 @Data
+@Entity
+@Table(name = "like_list")
 public class LikeList {
-
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long sn;   // SN (Primary Key)
-    private int purchaseQuantity;  // 購買數量
-    private String account;        // 扣款帳號
-    private double totalFee;       // 總手續費
-    private double totalAmount;    // 總金額
+    private Integer sn;
+
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "product_id")
+    private Integer productId;
+
+    @Column(name = "purchase_quantity")
+    private Integer purchaseQuantity;
+
+    @Column(name = "account")
+    private String account;
+
+    @Column(name = "total_fee")
+    private BigDecimal totalFee;
+
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
+
 }

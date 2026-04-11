@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/esun?useSSL=false&serverTimezone=Asia/Taipei
+    username: root
+    password: 24509
+    #${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+server:
+  port: 8080

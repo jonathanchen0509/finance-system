@@ -1,80 +1,87 @@
 package com.example.finance.service;
 
+import com.example.finance.dto.LikeListRequest;
+import com.example.finance.dto.LikeListResponse;
 import com.example.finance.entity.LikeList;
-import com.example.finance.entity.Product;
 import com.example.finance.repository.LikeListRepository;
-import com.example.finance.repository.ProductRepository;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LikeListService {
 
     private final LikeListRepository likeListRepository;
-    private final ProductRepository productRepository;
 
-    public LikeListService(LikeListRepository likeListRepository,
-                           ProductRepository productRepository) {
-        this.likeListRepository = likeListRepository;
-        this.productRepository = productRepository;
-    }
-
-    //  新增喜好商品
     @Transactional
-    public LikeList create(Long productNo, int quantity, String account) {
+    public void addLike(LikeListRequest req) {
+        likeListRepository.callAddLikeSP(
+                req.getUserId(),
+                req.getProductId(),
+                req.getQuantity(),
+                req.getAccount()
+        );
+    }
+    public LikeListResponse getLikeList(String userId) {
 
-        // 取得商品（用來計算）
-        Product product = productRepository.findById(productNo)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product 不存在"));
+        List<Object[]> rows = likeListRepository.findLikeListByUserId(userId);
 
-        LikeList like = new LikeList();
+        LikeListResponse response = new LikeListResponse();
 
-        like.setPurchaseQuantity(quantity);
-        like.setAccount(account);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        BigDecimal totalFee = BigDecimal.ZERO;
 
-        // 計算總金額與手續費
-        double totalAmount = product.getPrice() * quantity;
-        double totalFee = totalAmount * product.getFeeRate();
+        List<LikeListResponse.ProductItem> items = new ArrayList<>();
 
-        like.setTotalAmount(totalAmount);
-        like.setTotalFee(totalFee);
+        for (Object[] row : rows) {
 
-        return likeListRepository.save(like);
+            // 使用者資訊（只設定一次）
+            if (response.getUserName() == null) {
+                response.setUserName((String) row[0]);
+                response.setEmail((String) row[1]);
+                response.setAccount((String) row[2]);
+            }
+
+            // 商品資料
+            LikeListResponse.ProductItem item = new LikeListResponse.ProductItem();
+            item.setProductName((String) row[3]);
+            item.setQuantity((Integer) row[4]);
+            item.setTotalAmount((BigDecimal) row[5]);
+            item.setTotalFee((BigDecimal) row[6]);
+
+            totalAmount = totalAmount.add(item.getTotalAmount());
+            totalFee = totalFee.add(item.getTotalFee());
+
+            items.add(item);
+        }
+
+        response.setTotalAmount(totalAmount);
+        response.setTotalFee(totalFee);
+        response.setProducts(items);
+
+        return response;
     }
 
-    //  查詢全部
-    public List<LikeList> getAll() {
-        return likeListRepository.findAll();
-    }
-
-    //  刪除
-    public void delete(Long sn) {
+    @Transactional
+    public void deleteLike(Integer sn) {
         likeListRepository.deleteById(sn);
     }
 
-    //  更新
     @Transactional
-    public LikeList update(Long sn, Long productId, int quantity, String account) {
+    public void updateLike(Integer sn, LikeListRequest req) {
 
-        LikeList like = likeListRepository.findById(sn)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "資料不存在"));
+        LikeList entity = likeListRepository.findById(sn)
+                .orElseThrow(() -> new RuntimeException("找不到資料"));
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product 不存在"));
+        entity.setPurchaseQuantity(req.getQuantity());
+        entity.setAccount(req.getAccount());
 
-        like.setPurchaseQuantity(quantity);
-        like.setAccount(account);
-
-        double totalAmount = product.getPrice() * quantity;
-        double totalFee = totalAmount * product.getFeeRate();
-
-        like.setTotalAmount(totalAmount);
-        like.setTotalFee(totalFee);
-
-        return likeListRepository.save(like);
+        likeListRepository.save(entity);
     }
+
 }
