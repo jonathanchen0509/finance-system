@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>喜好商品查詢</h2>
+    <h2>金融商品喜好紀錄系統</h2>
 
     <input v-model="userId" placeholder="輸入 userId" />
     <button @click="getLikes">查詢</button>
