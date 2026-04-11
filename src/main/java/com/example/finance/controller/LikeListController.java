@@ -5,7 +5,7 @@ import com.example.finance.service.LikeListService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/likes")
 public class LikeListController {
