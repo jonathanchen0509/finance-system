@@ -122,6 +122,7 @@ data.sql
 
 執行
 ```bash
+set DB_PASSWORD="你的密碼"
 mvn spring-boot:run
 ```
 
