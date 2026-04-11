@@ -5,7 +5,7 @@ import lombok.Data;
 public class LikeListRequest {
 
     private String userId;
-    private Integer productId;
+    private Long productId;
     private Integer quantity;
     private String account;
 }

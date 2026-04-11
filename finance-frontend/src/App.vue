@@ -8,12 +8,18 @@
     <div v-if="result">
       <h3>{{ result.userName }}</h3>
       <p>Email: {{ result.email }}</p>
-      <p>總金額: {{ result.totalAmount }}</p>
-      <p>手續費: {{ result.totalFee }}</p>
+      <p>總商品金額：{{ result.totalBaseAmount }}</p>
+      <p>總手續費：{{ result.totalFee }}</p>
+      <p>總扣款金額: {{ result.totalAmount }}</p>
 
       <ul>
         <li v-for="p in result.products" :key="p.productName">
-          {{ p.productName }} - {{ p.quantity }}
+          商品：{{ p.productName }} <br>
+          數量：{{ p.quantity }} <br>
+          商品金額：{{ p.baseAmount }} <br>
+          手續費：{{ p.totalFee }} <br>
+          單筆扣款總額：{{ p.totalAmount }} <br>
+
           <button @click="deleteItem(p.sn)">刪除</button>
         </li>
       </ul>

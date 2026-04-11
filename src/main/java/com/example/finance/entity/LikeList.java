@@ -25,6 +25,9 @@ public class LikeList {
     @Column(name = "account")
     private String account;
 
+    @Column(name = "base_amount")
+    private BigDecimal baseAmount;
+
     @Column(name = "total_fee")
     private BigDecimal totalFee;
 

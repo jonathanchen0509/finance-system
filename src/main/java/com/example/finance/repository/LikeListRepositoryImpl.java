@@ -11,7 +11,7 @@ public class LikeListRepositoryImpl implements LikeListRepositoryCustom {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void callAddLikeSP(String userId, Integer productId, Integer quantity, String account) {
+    public void callAddLikeSP(String userId, Long productId, Integer quantity, String account) {
         jdbcTemplate.update(
                 "CALL add_like(?,?,?,?)",
                 userId, productId, quantity, account
