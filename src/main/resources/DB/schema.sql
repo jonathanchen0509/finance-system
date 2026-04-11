@@ -6,7 +6,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE product (
-                         id INT AUTO_INCREMENT PRIMARY KEY,
+                         no INT AUTO_INCREMENT PRIMARY KEY,
                          product_name VARCHAR(100),
                          price DECIMAL(10,2),
                          fee_rate DECIMAL(5,4)

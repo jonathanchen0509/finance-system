@@ -18,7 +18,7 @@ BEGIN
 SELECT price, fee_rate
 INTO v_price, v_fee_rate
 FROM product
-WHERE id = p_product_id;
+WHERE no = p_product_id;
 
 -- 計算
     SET v_base_amount = v_price * p_quantity;

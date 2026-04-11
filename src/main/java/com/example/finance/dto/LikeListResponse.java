@@ -22,6 +22,7 @@ public class LikeListResponse {
         private BigDecimal baseAmount;
         private BigDecimal totalFee;
         private BigDecimal totalAmount;
-
+        private Integer sn;
+        private Long productNo;
     }
 }

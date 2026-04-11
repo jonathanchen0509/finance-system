@@ -28,7 +28,7 @@ public class LikeListService {
         }
         likeListRepository.callAddLikeSP(
                 req.getUserId(),
-                req.getProductId(),
+                req.getProductNo(),
                 req.getQuantity(),
                 req.getAccount()
         );
@@ -60,6 +60,8 @@ public class LikeListService {
             item.setBaseAmount((BigDecimal) row[5]);
             item.setTotalFee((BigDecimal) row[6]);
             item.setTotalAmount((BigDecimal) row[7]);
+            item.setSn((Integer) row[8]);
+            item.setProductNo(((Integer) row[9]).longValue());
 
 
             totalBaseAmount = totalBaseAmount.add(item.getBaseAmount());
@@ -90,7 +92,7 @@ public class LikeListService {
         }
         LikeList entity = likeListRepository.findById(sn)
                 .orElseThrow(() -> new RuntimeException("找不到資料"));
-        Product product = productRepository.findById(req.getProductId())
+        Product product = productRepository.findById(req.getProductNo())
                 .orElseThrow(() -> new RuntimeException("商品不存在"));
 
         BigDecimal price = product.getPrice();

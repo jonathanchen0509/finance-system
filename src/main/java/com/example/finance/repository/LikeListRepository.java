@@ -9,10 +9,10 @@ public interface LikeListRepository extends JpaRepository<LikeList, Integer>, Li
     @Query(value = """
     SELECT u.user_name, u.email, l.account,
            p.product_name, l.purchase_quantity,l.base_amount,
-           l.total_fee, l.total_amount
+           l.total_fee, l.total_amount,l.sn,l.product_id
     FROM like_list l
     JOIN users u ON l.user_id = u.user_id
-    JOIN product p ON l.product_id = p.id
+    JOIN product p ON l.product_id = p.no
     WHERE l.user_id = :userId
 """, nativeQuery = true)
     List<Object[]> findLikeListByUserId(String userId);

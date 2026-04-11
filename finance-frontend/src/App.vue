@@ -15,11 +15,16 @@
       <ul>
         <li v-for="p in result.products" :key="p.productName">
           商品：{{ p.productName }} <br>
-          數量：{{ p.quantity }} <br>
+
+          數量：
+          <input v-model="p.quantity" style="width:60px" />
+
+          <br>
           商品金額：{{ p.baseAmount }} <br>
           手續費：{{ p.totalFee }} <br>
           單筆扣款總額：{{ p.totalAmount }} <br>
 
+          <button @click="updateItem(p)">更新</button>
           <button @click="deleteItem(p.sn)">刪除</button>
         </li>
       </ul>
@@ -30,7 +35,7 @@
     <h2>新增商品</h2>
 
     <input v-model="newData.userId" placeholder="userId" />
-    <input v-model="newData.productId" placeholder="productId" />
+    <input v-model="newData.productNo" placeholder="productNo" />
     <input v-model="newData.quantity" placeholder="quantity" />
     <input v-model="newData.account" placeholder="account" />
 
@@ -46,7 +51,7 @@ export default {
       result: null,
       newData: {
         userId: "",
-        productId: "",
+        productNo: "",
         quantity: "",
         account: ""
       }
@@ -85,7 +90,7 @@ export default {
           },
           body: JSON.stringify({
             userId: this.newData.userId.trim(),
-            productId: Number(this.newData.productId),
+            productNo: Number(this.newData.productNo),
             quantity: Number(this.newData.quantity),
             account: this.newData.account.trim()
           })
@@ -108,6 +113,34 @@ export default {
         method: "DELETE"
       });
       alert("刪除成功");
+    },
+    async updateItem(p) {
+      try {
+        const res = await fetch(`http://localhost:8080/likes/${p.sn}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            userId: this.userId,
+            productNo: p.productNo,
+            quantity: Number(p.quantity),
+            account: this.result.account
+          })
+        });
+
+        if (!res.ok) {
+          alert("更新失敗");
+          return;
+        }
+
+        alert("更新成功");
+
+        await this.getLikes();
+
+      } catch (e) {
+        alert("更新錯誤");
+      }
     }
   }
 };

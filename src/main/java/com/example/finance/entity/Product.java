@@ -11,8 +11,15 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long No;    // 產品流水號 (Primary Key)
-    private String ProductName; //產品名稱
-    private BigDecimal Price;   //產品價格
-    private BigDecimal FeeRate; //手續費率(%)
+    @Column(name = "no")
+    private Long no;
+
+    @Column(name = "product_name")
+    private String productName;
+
+    @Column(name = "price")
+    private BigDecimal price;
+
+    @Column(name = "fee_rate")
+    private BigDecimal feeRate;
 }
