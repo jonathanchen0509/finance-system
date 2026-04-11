@@ -1,3 +1,8 @@
+CREATE DATABASE finance_db;
+
+USE finance_db;
+
+
 CREATE TABLE users (
                        user_id VARCHAR(20) PRIMARY KEY,
                        user_name VARCHAR(50),
@@ -18,6 +23,7 @@ CREATE TABLE like_list (
                            product_id INT,
                            purchase_quantity INT,
                            account VARCHAR(20),
+                           base_amount DECIMAL(10,2),
                            total_fee DECIMAL(10,2),
                            total_amount DECIMAL(10,2)
 );
