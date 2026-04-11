@@ -14,15 +14,30 @@
 
       <ul>
         <li v-for="p in result.products" :key="p.productName">
-          商品：{{ p.productName }} <br>
+
+
+          商品：
+          <select v-model="p.productNo">
+            <option v-for="prod in products" :key="prod.no" :value="prod.no">
+              {{ prod.productName }}
+            </option>
+          </select>
+
+          <br>
 
           數量：
           <input v-model="p.quantity" style="width:60px" />
 
           <br>
+
+          扣款帳戶：
+          <input v-model="p.account" />
+
+          <br>
           商品金額：{{ p.baseAmount }} <br>
           手續費：{{ p.totalFee }} <br>
           單筆扣款總額：{{ p.totalAmount }} <br>
+
 
           <button @click="updateItem(p)">更新</button>
           <button @click="deleteItem(p.sn)">刪除</button>
@@ -140,7 +155,7 @@ export default {
             userId: this.userId,
             productNo: p.productNo,
             quantity: Number(p.quantity),
-            account: this.result.account
+            account: p.account
           })
         });
 

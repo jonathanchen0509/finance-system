@@ -17,6 +17,7 @@ public class LikeListResponse {
 
     @Data
     public static class ProductItem {
+        private String account;
         private String productName;
         private Integer quantity;
         private BigDecimal baseAmount;

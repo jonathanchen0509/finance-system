@@ -55,6 +55,7 @@ public class LikeListService {
 
             // 商品資料
             LikeListResponse.ProductItem item = new LikeListResponse.ProductItem();
+
             item.setProductName((String) row[3]);
             item.setQuantity((Integer) row[4]);
             item.setBaseAmount((BigDecimal) row[5]);
@@ -62,6 +63,7 @@ public class LikeListService {
             item.setTotalAmount((BigDecimal) row[7]);
             item.setSn((Integer) row[8]);
             item.setProductNo(((Integer) row[9]).longValue());
+            item.setAccount((String) row[2]);
 
 
             totalBaseAmount = totalBaseAmount.add(item.getBaseAmount());
@@ -109,7 +111,7 @@ public class LikeListService {
         entity.setBaseAmount(baseAmount);
         entity.setTotalFee(totalFee);
         entity.setTotalAmount(totalAmount);
-
+        entity.setProductId(req.getProductNo().intValue());
 
         likeListRepository.save(entity);
     }
